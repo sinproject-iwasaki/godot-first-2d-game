@@ -9,33 +9,33 @@ signal start_game
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta: float) -> void:
 	pass
 
 
-func show_message(text):
+func show_message(text: String) -> void:
 	message.text = text
 	message.show()
 	message_timer.start()
-	
 
-func show_game_over():
+
+func show_game_over() -> void:
 	show_message("Game Over")
 	await message_timer.timeout
-	
+
 	message.text = "Dodge the Creeps!"
 	message.show()
-	
+
 	await get_tree().create_timer(1.0).timeout
 	start_button.show()
-	
 
-func update_score(score):
+
+func update_score(score: int) -> void:
 	score_label.text = str(score)
 
 
@@ -46,5 +46,3 @@ func _on_start_button_pressed() -> void:
 
 func _on_message_timer_timeout() -> void:
 	message.hide()
-
-
