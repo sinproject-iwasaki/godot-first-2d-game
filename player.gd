@@ -2,19 +2,22 @@ extends Area2D
 
 signal hit
 
-@export var speed = 400
-var screen_size
+@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+
+@export var speed := 400
+var screen_size := Vector2.ZERO
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	screen_size = get_viewport_rect().size
 	hide()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	var velocity = Vector2.ZERO
+func _process(delta: float) -> void:
+	var velocity := Vector2.ZERO
 	if Input.is_action_pressed("move_right"):
 		velocity.x += 1
 	if Input.is_action_pressed("move_left"):
@@ -23,33 +26,32 @@ func _process(delta):
 		velocity.y += 1
 	if Input.is_action_pressed("move_up"):
 		velocity.y -= 1
-		
+
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
-		$AnimatedSprite2D.play()
+		animated_sprite_2d.play()
 	else:
-		$AnimatedSprite2D.stop()
-	
+		animated_sprite_2d.stop()
+
 	position += velocity * delta
 	position = position.clamp(Vector2.ZERO, screen_size)
-		
+
 	if velocity.x != 0:
-		$AnimatedSprite2D.animation = "walk"
-		$AnimatedSprite2D.flip_v = false
-		$AnimatedSprite2D.flip_h = velocity.x < 0
+		animated_sprite_2d.animation = "walk"
+		animated_sprite_2d.flip_v = false
+		animated_sprite_2d.flip_h = velocity.x < 0
 	if velocity.y != 0:
-		$AnimatedSprite2D.animation = "up"
-		$AnimatedSprite2D.flip_v = velocity.y > 0
+		animated_sprite_2d.animation = "up"
+		animated_sprite_2d.flip_v = velocity.y > 0
 
 
-func _on_body_entered(body):
+func _on_body_entered(_body: Node2D) -> void:
 	hide()
 	hit.emit()
-	
+
 	$CollisionShape2D.set_deferred("disabled", true)
-	
-func start(pos):
+
+func start(pos: Vector2) -> void:
 	position = pos
 	show()
-	$CollisionShape2D.disabled = false
-	
+	collision_shape_2d.disabled = false
